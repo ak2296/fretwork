@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fretwork Guitar Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday practice tool, focused and warm
+   IDEA a guitar neck: rosewood board, nickel strings, pearl inlays; the tab scrolls past a playhead
+   PICTURE the scrolling tab lane plus a fretboard strip showing where fingers go now and next
+   COLOUR white ground, rosewood panel, pearl notes, pick orange for the live note
+   TYPE Barlow Condensed 700 display + Barlow text
+   LAYOUT laptop: player left, library column right; phone: title, player, controls, library */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#121010);--ink:light-dark(#1b1411,#f3ece6);--mut:light-dark(#6f625b,#a99c93);--line:light-dark(#e4dcd6,#2f2825);--panel:light-dark(#f7f3f0,#1c1817);--wood:#2b1a13;--pearl:#f1e9dc;--acc:#ff5a36;--ok:light-dark(#1f7a4a,#5fd194)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 Barlow,system-ui,sans-serif;overflow-x:clip}
+.band{padding-left:max(4vw,16px);padding-right:max(4vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+header{padding-top:clamp(20px,3vw,36px);padding-bottom:14px}
+h1,h2,h3{font-family:"Barlow Condensed",Barlow,sans-serif;font-weight:700;letter-spacing:-.01em;line-height:1.05;margin:0}
+h1{font-size:clamp(34px,5vw,48px)}
+header p{margin:6px 0 0;color:var(--mut);max-width:62ch}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;padding-bottom:48px}
+.stage{background:var(--wood);color:var(--pearl);border-radius:14px;overflow:hidden}
+.now{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;padding:16px 18px 4px}
+.now h2{font-size:28px}
+.now p{margin:4px 0 0;color:#cbbfae;font-size:15px;max-width:64ch}
+.light{flex:none;width:22px;height:22px;border-radius:50%;background:var(--acc);opacity:.15;margin-top:6px;box-shadow:0 0 0 4px #ffffff10}
+.fig{position:relative}.fig>svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.run{height:250px}.fb{height:128px;border-top:1px solid #ffffff14}
+#run text,#fb text{font-family:Barlow,sans-serif}
+#run .st.now circle{fill:var(--acc)}#run .st.now text.f{fill:#fff}#run .st.now .strum{stroke:var(--acc);opacity:1}#run .st.now text.pk{fill:var(--acc)}
+.transport{display:grid;gap:14px;padding:16px 0 0}
+.row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+button{font:600 16px/1 Barlow,sans-serif;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--mut)}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+button:active{transform:translateY(1px)}
+.play{background:var(--acc);border-color:var(--acc);color:#fff;font-size:19px;min-width:120px;min-height:52px}
+.play.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.tempo{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tempo output{font:700 clamp(40px,6vw,54px)/1 "Barlow Condensed",sans-serif;min-width:2.3ch;text-align:right;font-variant-numeric:tabular-nums}
+.tempo span{color:var(--mut);margin-right:6px}
+.tempo button{width:44px;padding:0;font-size:22px}
+input[type=range]{width:min(260px,100%);accent-color:var(--acc);height:44px}
+label{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+input[type=checkbox]{width:20px;height:20px;accent-color:var(--acc)}
+input[type=number],input[type=text],select,textarea{font:16px Barlow,sans-serif;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:44px}
+input[type=number]{width:5.2em}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.judge .ok{color:var(--ok);border-color:currentColor;background:transparent}
+#status{color:var(--mut);font-size:15px}
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tabs button{flex:1;padding:0 8px}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);cursor:pointer;text-align:left;min-height:auto;font-weight:400}
+.item.sel{border-color:var(--acc);box-shadow:inset 4px 0 0 var(--acc)}
+.item b{font-weight:600}.item small{color:var(--mut);font-size:14px;grid-column:1}
+.item .best{grid-row:1/3;grid-column:2;font:700 22px/1 "Barlow Condensed",sans-serif;text-align:right;white-space:nowrap}
+.item .best i{display:block;font:500 13px Barlow,sans-serif;color:var(--mut);font-style:normal}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;grid-column:1/-1}.acts button{min-height:36px;padding:0 10px;font-size:14px}
+aside h3{font-size:22px;margin:18px 0 8px}
+.form{display:grid;gap:10px}.form label{display:grid;gap:4px;white-space:normal;font-weight:500}
+.form .two{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.form .two input,.form .two select{width:100%}
+textarea{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;min-height:190px;white-space:pre;overflow-x:auto;resize:vertical}
+.hint{color:var(--mut);font-size:14px;margin:0}
+.err{color:var(--acc);font-size:15px;margin:0}
+.big{font:700 52px/1 "Barlow Condensed",sans-serif}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:5.5em minmax(0,1fr) 4.2em;gap:8px;align-items:center;font-size:14px}
+.bar .tr{height:12px;background:var(--line);border-radius:6px;overflow:hidden}.bar .tr i{display:block;height:100%;background:var(--acc);border-radius:6px}
+.bar span:last-child{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bar span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note{font-size:13px;color:var(--mut)}
+.srch{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.srch input{width:100%}
+.sres{display:grid;gap:6px;margin:10px 0 0;padding:0;list-style:none}
+.sres li{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--bg)}
+.sres small{color:var(--mut);font-size:14px}
+.sres .acts a,.links a{color:var(--acc);font-weight:600}
+.links{font-size:14px;color:var(--mut);margin:8px 0 0}
+@media(max-width:900px){.main{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.run{height:220px}.now h2{font-size:24px}.play{flex:1}}
+@media(prefers-reduced-motion:reduce){.light{transition:none}}
+</style>
+</head>
+<body>
+<header class="band"><div class="wrap">
+<h1>Fretwork</h1>
+<p>Drills that lock your picking and fretting hands together, a click that speeds up as you get clean, and the songs you choose.</p>
+</div></header>
+
+<main class="band"><div class="wrap main">
+<section>
+  <div class="stage">
+    <div class="now"><div><h2 id="iname">Chromatic 1-2-3-4</h2><p id="itip"></p></div><div class="light" id="light" title="Beat"></div></div>
+    <div class="fig run"><svg id="run" aria-label="Scrolling tab"></svg></div>
+    <div class="fig fb"><svg id="fb" aria-label="Fretboard: where your fingers go"></svg></div>
+  </div>
+  <div class="transport">
+    <div class="row">
+      <button id="play" class="play">Play</button>
+      <div class="tempo">
+        <button id="minus" aria-label="Slower">−</button><output id="bpmv">60</output><span>bpm</span><button id="plus" aria-label="Faster">+</button>
+        <input type="range" id="bpm" min="30" max="260" value="60" aria-label="Tempo">
+      </div>
+    </div>
+    <div class="row">
+      <label><input type="checkbox" id="cin" checked> Count-in</label>
+      <label><input type="checkbox" id="clk" checked> Click</label>
+      <label><input type="checkbox" id="snd" checked> Guide notes</label>
+    </div>
+    <div class="row card">
+      <label><input type="checkbox" id="auto" checked> Auto speed-up</label>
+      <label>to <input type="number" id="tgt" min="30" max="260" value="120"> bpm</label>
+      <label>by +<input type="number" id="inc" min="1" max="20" value="4"></label>
+      <label>every <input type="number" id="every" min="1" max="20" value="2"> loops</label>
+    </div>
+    <div class="row judge">
+      <button id="clean" class="ok">Clean run, log it</button>
+      <button id="messy">Messy, slow down</button>
+      <span id="status">Space bar starts and stops.</span>
+    </div>
+  </div>
+</section>
+
+<aside>
+  <div class="tabs" role="tablist">
+    <button role="tab" id="t-drills" aria-selected="true">Drills</button>
+    <button role="tab" id="t-songs" aria-selected="false">My songs</button>
+    <button role="tab" id="t-prog" aria-selected="false">Progress</button>
+  </div>
+  <div id="pane"></div>
+</aside>
+</div></main>
+
+<script>
+{
+const $=s=>document.querySelector(s);
+const OPEN=[329.63,246.94,196,146.83,110,82.41];
+const SN=['e','B','G','D','A','E'];
+const SHAPES={G:'320003',C:'x32010',D:'xx0232',Em:'022000',Am:'x02210',E:'022100',A:'x02220',Dm:'xx0231',F:'133211',E7:'020100',A7:'x02020',D7:'xx0212',G7:'320001',C7:'x32310',B7:'x21202',Bm:'x24432',Fmaj7:'xx3210',Cmaj7:'x32000',Cadd9:'x32033',Asus2:'x02200',Asus4:'x02230',Dsus2:'xx0230',Dsus4:'xx0233',Em7:'022030',Am7:'x02010',Dm7:'xx0211',Bb:'x13331',Fm:'133111',Gm:'355333',Cm:'x35543'};
+const shape=c=>{const s=SHAPES[c];return s?[...s].map((ch,i)=>[5-i,ch==='x'?-1:+ch]):null};
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- drills ---------- */
+const seq=a=>a.map(([s,f],i)=>({n:[[s,f]],p:i%2?'u':'d'}));
+const bars=(st,spb,bpb)=>{st.forEach((x,i)=>x.bar=i%(spb*bpb)===0);return st};
+const DRILLS=[
+ {id:'d-chrom',name:'Chromatic 1-2-3-4',spb:4,bpb:4,start:60,target:120,tip:'One finger per fret, frets 5 to 8, strict down-up picking. Fret the note a hair before the pick hits it, and keep idle fingers hovering just above the strings.',
+  build(){const a=[];for(let s=5;s>=0;s--)for(const f of[5,6,7,8])a.push([s,f]);for(let s=0;s<6;s++)for(const f of[8,7,6,5])a.push([s,f]);return seq(a)}},
+ {id:'d-spider',name:'Spider walk 1-3 / 2-4',spb:4,bpb:4,start:55,target:110,tip:'Fingers 1 and 3 on neighbouring strings, then 2 and 4. This builds finger independence. Keep each finger down until the next one has landed.',
+  build(){const u=[];for(let s=5;s>0;s--)u.push([s,5],[s-1,7],[s,6],[s-1,8]);return seq([...u,...u.slice().reverse()])}},
+ {id:'d-burst',name:'Single-string bursts',spb:4,bpb:4,start:70,target:150,tip:'Frets 5-7-8-7 on the G string. Pick from the wrist with a tiny motion, the pick barely clearing the string. This is the drill to push hardest.',
+  build(){return seq(Array.from({length:16},(_,i)=>[2,[5,7,8,7][i%4]]))}},
+ {id:'d-penta',name:'A minor pentatonic',spb:4,bpb:4,start:60,target:120,tip:'Box 1 at the 5th fret, up and back down. Pick direction keeps alternating when you change strings; that crossing is where hands fall out of sync.',
+  build(){const P=[[5,5],[5,8],[4,5],[4,7],[3,5],[3,7],[2,5],[2,7],[1,5],[1,8],[0,5],[0,8]];return seq([...P,...P.slice(1,-1).reverse()])}},
+ {id:'d-chords',name:'Chord changes G C D Em',spb:1,bpb:4,start:60,target:110,chord:true,tip:'Strum on every beat. Move all fingers to the next shape as one unit, and start lifting on beat 4 so the new chord lands on beat 1.',
+  build(){const o=[];for(const c of['G','C','D','Em'])for(let b=0;b<4;b++)o.push({c,first:b===0,n:shape(c),p:'d'});return o}}
+];
+
+/* ---------- song parsing ---------- */
+function parseSong(sg){
+ const L=sg.text.replace(/\r/g,'').split('\n'),sys=[];let run=[];
+ for(const ln of L){const m=ln.match(/^\s*[A-Ga-g][#b]?\s*[|:](.*)$/);if(m&&/-/.test(m[1])){run.push(m[1]);if(run.length===6){sys.push(run);run=[]}}else run=[]}
+ if(!sys.length){
+  const st=[];for(const t of sg.text.split(/[\s|]+/)){const m=t.match(/^([A-G][#b]?(?:maj7|maj9|m7|m9|m|7|9|6|5|sus2|sus4|add9|dim|aug)?)(?::(\d+))?$/);if(!m)continue;const k=m[2]?+m[2]:sg.bpb;for(let b=0;b<k;b++)st.push({c:m[1],first:b===0,n:shape(m[1]),p:'d'})}
+  st.forEach((x,i)=>x.bar=i%sg.bpb===0);return {steps:st,chord:true,spb:1};
+ }
+ const st=[];let pend=true,k=0;
+ for(const S of sys){
+  const len=Math.max(...S.map(x=>x.length)),R=S.map(x=>x.padEnd(len,'-')),skip=[-1,-1,-1,-1,-1,-1];
+  for(let c=0;c<len;c++){
+   if(R.some(r=>r[c]==='|')){pend=true;continue}
+   const n=[];
+   for(let s=0;s<6;s++){if(skip[s]===c)continue;const ch=R[s][c];
+    if(/\d/.test(ch)){const nx=R[s][c+1];if(nx&&/\d/.test(nx)&&+(ch+nx)<=24){n.push([s,+(ch+nx)]);skip[s]=c+1}else n.push([s,+ch])}
+    else if(ch==='x'||ch==='X')n.push([s,-1])}
+   if(n.length){st.push({n,bar:pend,p:k++%2?'u':'d'});pend=false}
+   else if(sg.mode==='dash'){st.push({n:[],bar:pend});pend=false}
+  }
+  pend=true;
+ }
+ if(sg.mode==='dash')st.forEach((x,i)=>{if(x.n.length)x.p=i%2?'u':'d'});
+ return {steps:st,chord:false,spb:sg.spb};
+}
+const SAMPLES=[
+ {id:'s-ode',sample:true,name:'Ode to Joy (Beethoven)',bpm:100,bpb:4,spb:1,mode:'even',text:['e|-0-0-1-3-|-3-1-0---|-------0-|-0-------|-0-0-1-3-|-3-1-0---|-------0-|---------|','B|---------|-------3-|-1-1-3---|---3-3---|---------|-------3-|-1-1-3---|-3-1-1---|','G|---------|---------|---------|---------|---------|---------|---------|---------|','D|---------|---------|---------|---------|---------|---------|---------|---------|','A|---------|---------|---------|---------|---------|---------|---------|---------|','E|---------|---------|---------|---------|---------|---------|---------|---------|'].join('\n')},
+ {id:'s-grace',sample:true,name:'Amazing Grace (traditional) chords',bpm:90,bpb:3,spb:1,mode:'even',text:'G | G | C | G | G | G | D | D |\nG | G | C | G | G | D | G | G'}
+];
+
+/* ---------- state ---------- */
+let songs,prog,mins,item,bpm=60,tab='drills',editing=null,undo=null,passes=0;
+let sq='',sres=null,sbusy=false,serr='',draftName='';
+const ugUrl=q=>'https://www.ultimate-guitar.com/search.php?search_type=title&value='+encodeURIComponent(q);
+const ssUrl=q=>'https://www.songsterr.com/?pattern='+encodeURIComponent(q);
+async function doSearch(q){sq=q.trim();if(!sq)return;sbusy=true;serr='';sres=null;render();
+ const api=window.pywebview&&window.pywebview.api;
+ if(!api||!api.search){serr='desktop'}else{try{const j=await api.search(sq);sres=j.results||[];serr=j.error||''}catch(e){serr='Search failed. Check your internet connection.'}}
+ sbusy=false;render()}
+const songItem=sg=>{const p=parseSong(sg);return {id:sg.id,name:sg.name,spb:p.spb,bpb:sg.bpb,steps:p.steps,chord:p.chord,start:Math.max(30,Math.round(sg.bpm*.6)),target:sg.bpm,tip:p.chord?'Strum on every beat and change shape on beat 1. Look at the next chord name before you need it.':'Loop it slowly until every note is clean, then let auto speed-up carry it to full tempo ('+sg.bpm+' bpm).'}};
+const drillItem=d=>{const st=bars(d.build(),d.spb,d.bpb);return {...d,steps:st}};
+const save=()=>{LS.set('fw-songs',songs);LS.set('fw-prog',prog);LS.set('fw-mins',mins)};
+
+/* ---------- audio ---------- */
+let ac=null,master=null;const cache={};
+function ensureAC(){if(!ac){const C=window.AudioContext||window.webkitAudioContext;ac=new C();master=ac.createGain();master.gain.value=.8;master.connect(ac.destination)}if(ac.state==='suspended')ac.resume()}
+function kbuf(fr){const key=Math.round(fr*10);if(cache[key])return cache[key];const sr=ac.sampleRate,len=Math.floor(sr*1.3),N=Math.max(2,Math.round(sr/fr)),b=ac.createBuffer(1,len,sr),d=b.getChannelData(0),r=new Float32Array(N);for(let i=0;i<N;i++)r[i]=Math.random()*2-1;let j=0;for(let i=0;i<len;i++){const a=r[j],c=r[(j+1)%N];d[i]=a;r[j]=(a+c)*.4985;j=(j+1)%N}return cache[key]=b}
+function pluck(fr,t,dur,v){const s=ac.createBufferSource(),g=ac.createGain();s.buffer=kbuf(fr);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(g);g.connect(master);s.start(t);s.stop(t+dur+.03)}
+function click(t,acc){const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=acc?1650:1050;g.gain.setValueAtTime(acc?.45:.26,t);g.gain.exponentialRampToValueAtTime(.001,t+.045);o.connect(g);g.connect(master);o.start(t);o.stop(t+.06)}
+const freq=(s,f)=>OPEN[s]*2**(f/12);
+
+/* ---------- drawing ---------- */
+const run=$('#run'),fb=$('#fb');let G=null,F=null,track=null,curStep=-1,pos=0;
+function drawRun(){
+ if(!item)return;const W=run.clientWidth,H=run.clientHeight;if(!W)return;
+ const T=50,B=H-42,sg=(B-T)/5,cw=item.chord?(W<520?52:66):(W<520?30:38),P=Math.round(Math.min(W*.3,230));G={T,B,sg,cw,P};
+ let tr='';
+ item.steps.forEach((st,i)=>{const x=i*cw;let g='';
+  if(st.bar)g+=`<line x1="${x-cw/2}" x2="${x-cw/2}" y1="${T}" y2="${B}" stroke="#f1e9dc" stroke-opacity=".45"/>`;
+  if(item.chord){g+=`<line class="strum" x1="${x}" x2="${x}" y1="${T}" y2="${B}" stroke="#f1e9dc" stroke-width="4" stroke-linecap="round" opacity=".45"/>`;
+   if(st.first)g+=`<text x="${x}" y="${T-18}" text-anchor="middle" font-size="20" font-weight="700" fill="#f1e9dc">${esc(st.c)}</text>`}
+  else st.n.forEach(([s,f])=>{g+=`<circle cx="${x}" cy="${T+s*sg}" r="12.5" fill="#f1e9dc"/><text class="f" x="${x}" y="${T+s*sg+5}" text-anchor="middle" font-size="15" font-weight="600" fill="#2b1a13">${f<0?'x':f}</text>`});
+  if(st.p)g+=`<text class="pk" x="${x}" y="${B+28}" text-anchor="middle" font-size="16" fill="#cbbfae">${st.p==='d'?'↓':'↑'}</text>`;
+  tr+=`<g class="st" id="s${i}">${g}</g>`});
+ const end=item.steps.length*cw-cw/2;
+ tr+=`<line x1="${end}" x2="${end}" y1="${T}" y2="${B}" stroke="#ff5a36" stroke-width="3"/><text x="${end+8}" y="${T-18}" font-size="14" fill="#ff5a36">loop</text>`;
+ let h=`<rect x="${P-19}" y="${T-34}" width="38" height="${B-T+76}" rx="10" fill="#ff5a36" fill-opacity=".16"/>`;
+ for(let s=0;s<6;s++)h+=`<line x1="0" x2="${W}" y1="${T+s*sg}" y2="${T+s*sg}" stroke="#d9d0c3" stroke-opacity=".5" stroke-width="${1+s*.35}"/>`;
+ h+=`<g id="trk">${tr}</g><rect x="0" y="0" width="26" height="${H}" fill="#2b1a13"/>`;
+ SN.forEach((n,s)=>h+=`<text x="13" y="${T+s*sg+5}" text-anchor="middle" font-size="14" fill="#a8998a">${n}</text>`);
+ run.innerHTML=h;track=run.querySelector('#trk');curStep=-1;place(pos);mark(Math.floor(pos));
+}
+function place(p){if(track&&G)track.setAttribute('transform',`translate(${G.P-p*G.cw},0)`)}
+function drawFB(){
+ const W=fb.clientWidth,H=fb.clientHeight;if(!W)return;
+ const L=48,R=10,T=16,B=H-30,fw=(W-L-R)/15,sg=(B-T)/5;F={L,fw,T,sg};
+ let h=`<rect x="${L}" y="${T-9}" width="${W-L-R}" height="${B-T+18}" rx="3" fill="#3b2419"/><rect x="${L-5}" y="${T-9}" width="6" height="${B-T+18}" fill="#f1e9dc"/>`;
+ for(let f=1;f<=15;f++)h+=`<line x1="${L+f*fw}" x2="${L+f*fw}" y1="${T-9}" y2="${B+9}" stroke="#b9b2a8" stroke-width="2"/>`;
+ for(const f of[3,5,7,9,15])h+=`<circle cx="${L+(f-.5)*fw}" cy="${(T+B)/2}" r="5" fill="#f1e9dc" opacity=".5"/>`;
+ h+=`<circle cx="${L+11.5*fw}" cy="${T+sg*1.5}" r="5" fill="#f1e9dc" opacity=".5"/><circle cx="${L+11.5*fw}" cy="${T+sg*3.5}" r="5" fill="#f1e9dc" opacity=".5"/>`;
+ for(const f of[3,5,7,9,12,15])if(W>=520||f%2)h+=`<text x="${L+(f-.5)*fw}" y="${H-7}" text-anchor="middle" font-size="13" fill="#a8998a">${f}</text>`;
+ for(let s=0;s<6;s++)h+=`<line x1="${L-5}" x2="${W-R}" y1="${T+s*sg}" y2="${T+s*sg}" stroke="#d9d4cc" stroke-width="${1+s*.4}"/><text x="12" y="${T+s*sg+5}" text-anchor="middle" font-size="13" fill="#a8998a">${SN[s]}</text>`;
+ fb.innerHTML=h+'<g id="fbd"></g>';dots(Math.max(0,curStep));
+}
+function fx(f){return f<=0?F.L-17:F.L+(f-.5)*F.fw}
+function dots(i){
+ const g=fb.querySelector('#fbd');if(!g||!F||!item||!item.steps.length)return;
+ const st=item.steps[i]||item.steps[0];let nx=null;
+ for(let k=1;k<=item.steps.length;k++){const c=item.steps[(i+k)%item.steps.length];if(c.n&&c.n.length&&(!item.chord||c.c!==st.c)){nx=c;break}}
+ let h='';
+ const draw=(n,now)=>n.forEach(([s,f])=>{if(f>15)return;const x=fx(f),y=F.T+s*F.sg;
+  if(f<0)h+=`<text x="${x}" y="${y+5}" text-anchor="middle" font-size="15" font-weight="700" fill="${now?'#ff5a36':'#a8998a'}">x</text>`;
+  else if(now)h+=`<circle cx="${x}" cy="${y}" r="10.5" fill="#ff5a36"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">${f}</text>`;
+  else h+=`<circle cx="${x}" cy="${y}" r="9" fill="none" stroke="#f1e9dc" stroke-width="2" stroke-dasharray="3 3"/>`});
+ if(nx&&nx.n)draw(nx.n,false);if(st.n)draw(st.n,true);
+ if(item.chord&&st.n===null)h+=`<text x="${F.L+8}" y="${F.T+F.sg*2.6}" font-size="14" fill="#f1e9dc">${esc(st.c)}: shape not in the library, strum it your way</text>`;
+ g.innerHTML=h;
+}
+function mark(i){if(i===curStep)return;const o=run.querySelector('#s'+curStep);if(o)o.classList.remove('now');const n=run.querySelector('#s'+i);if(n)n.classList.add('now');curStep=i;dots(i)}
+const roR=new ResizeObserver(()=>drawRun());roR.observe(run);
+const roF=new ResizeObserver(()=>drawFB());roF.observe(fb);
+
+/* ---------- transport ---------- */
+let playing=false,timer=null,nextT=0,idx=0,vq=[],cur=null,lastBeat=-9,lastFrame=0,saveAt=0;
+const light=$('#light');
+function setBpm(v){bpm=Math.max(30,Math.min(260,Math.round(v)));$('#bpmv').value=bpm;$('#bpmv').textContent=bpm;$('#bpm').value=bpm;if(item){(prog[item.id]=prog[item.id]||{best:0,log:[]}).bpm=bpm;save()}}
+function sched(i,t){const st=item.steps[i],d=60/bpm/item.spb,beat=i%item.spb===0;
+ if(beat&&$('#clk').checked)click(t,(i/item.spb)%item.bpb===0);
+ if($('#snd').checked&&st.n&&st.n.length){const ns=st.n.filter(n=>n[1]>=0),dur=Math.min(1.2,Math.max(.18,d*1.6));
+  if(item.chord)ns.slice().sort((a,b)=>b[0]-a[0]).forEach(([s,f],k)=>pluck(freq(s,f),t+k*.012,Math.max(.4,dur),.24));
+  else ns.forEach(([s,f])=>pluck(freq(s,f),t,dur,.5))}
+ vq.push({i,t,d,beat})}
+function onLoop(){passes++;const a=$('#auto').checked,tg=+$('#tgt').value||bpm,inc=+$('#inc').value||4,ev=+$('#every').value||2;
+ if(a&&passes%ev===0&&bpm<tg)setBpm(Math.min(tg,bpm+inc));status()}
+function status(t){if(t){$('#status').textContent=t;return}const a=$('#auto').checked,tg=+$('#tgt').value,ev=+$('#every').value||2;
+ $('#status').textContent=`Loop ${passes}`+(a?(bpm<tg?` · next +${$('#inc').value} in ${ev-passes%ev} loop${ev-passes%ev>1?'s':''}`:' · target reached, log a clean run'):'')}
+function tick(){while(nextT<ac.currentTime+.12){sched(idx,nextT);nextT+=60/bpm/item.spb;idx++;if(idx>=item.steps.length){idx=0;onLoop()}}}
+function start(){if(!item||!item.steps.length)return;try{ensureAC()}catch(e){status('Audio is not available in this browser.');return}
+ playing=true;passes=0;vq=[];cur=null;idx=0;const t0=ac.currentTime+.15,bd=60/bpm;let t=t0;
+ if($('#cin').checked){for(let b=0;b<item.bpb;b++){click(t0+b*bd,b===0);vq.push({i:-1,t:t0+b*bd,beat:true})}t=t0+item.bpb*bd}
+ nextT=t;timer=setInterval(tick,25);tick();$('#play').textContent='Stop';$('#play').classList.add('on');status($('#cin').checked?'Count-in…':'Go');lastFrame=performance.now();requestAnimationFrame(frame)}
+function stop(){playing=false;clearInterval(timer);vq=[];$('#play').textContent='Play';$('#play').classList.remove('on');light.style.opacity=.15;save()}
+function frame(now){if(!playing)return;const at=ac.currentTime;
+ while(vq.length&&vq[0].t<=at){const e=vq.shift();if(e.beat)lastBeat=e.t;if(e.i>=0){cur=e;mark(e.i);if(e.i===0&&passes===0)status()}}
+ pos=cur?cur.i+Math.min(1,(at-cur.t)/cur.d):0;place(pos);
+ light.style.opacity=Math.max(.15,1-(at-lastBeat)/.2);
+ const dt=Math.min(.5,(now-lastFrame)/1000);lastFrame=now;const k=today();mins[k]=(mins[k]||0)+dt;if(now-saveAt>10000){saveAt=now;save();if(tab==='prog')render()}
+ requestAnimationFrame(frame)}
+$('#play').onclick=()=>playing?stop():start();
+$('#minus').onclick=()=>setBpm(bpm-2);$('#plus').onclick=()=>setBpm(bpm+2);
+$('#bpm').oninput=e=>setBpm(+e.target.value);
+for(const id of['auto','tgt','inc','every'])$('#'+id).onchange=()=>status();
+$('#clean').onclick=()=>{if(!item)return;const p=prog[item.id]=prog[item.id]||{best:0,log:[]};p.log.push({d:today(),b:bpm});p.log=p.log.slice(-40);const nb=bpm>p.best;p.best=Math.max(p.best,bpm);
+ const inc=+$('#inc').value||4,was=bpm;if(!$('#auto').checked||bpm>=+$('#tgt').value)setBpm(bpm+inc);save();render();status(`Logged a clean run at ${was} bpm${nb?', a new best':''}. Now ${bpm}.`)};
+$('#messy').onclick=()=>{setBpm(bpm-(+$('#inc').value||4));status(`Down to ${bpm} bpm. Slow and clean builds speed faster than fast and sloppy.`)};
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&!/INPUT|TEXTAREA|SELECT|BUTTON/.test(e.target.tagName)){e.preventDefault();playing?stop():start()}});
+
+/* ---------- library panes ---------- */
+function select(it){if(playing)stop();item=it;pos=0;curStep=-1;passes=0;
+ $('#iname').textContent=it.name;$('#itip').textContent=it.tip;$('#tgt').value=it.target;
+ setBpm(prog[it.id]?.bpm||it.start);drawRun();status('Space bar starts and stops.');render()}
+const best=id=>prog[id]?.best||0;
+function itemRow(o,sub,extra){return `<li><div class="item${item&&item.id===o.id?' sel':''}" data-id="${o.id}" tabindex="0" role="button"><b>${esc(o.name)}</b><span class="best">${best(o.id)||'–'}<i>best bpm</i></span><small>${sub}</small>${extra||''}</div></li>`}
+function render(){
+ for(const[k,b]of[['drills','#t-drills'],['songs','#t-songs'],['prog','#t-prog']])$(b).setAttribute('aria-selected',tab===k);
+ const P=$('#pane');let h='';
+ if(tab==='drills'){
+  h=`<ul class="list">${DRILLS.map(d=>itemRow(d,`Goal ${d.target} bpm · ${d.chord?'strums':d.spb+' notes'} per beat`)).join('')}</ul><p class="hint" style="margin-top:12px">Five to ten minutes a day across these beats an hour once a week. Start below the speed where it gets messy.</p>`;
+ }else if(tab==='songs'){
+  if(editing){const s=editing==='new'?{name:draftName,bpm:90,bpb:4,spb:2,mode:'even',text:''}:songs.find(x=>x.id===editing);
+   h=`<form class="form" id="sf"><h3 style="margin-top:0">${editing==='new'?'Add a song':'Edit song'}</h3>
+   <label>Name<input type="text" id="f-name" value="${esc(s.name)}" required></label>
+   <div class="two"><label>Full tempo<input type="number" id="f-bpm" min="30" max="260" value="${s.bpm}"></label><label>Beats/bar<input type="number" id="f-bpb" min="2" max="12" value="${s.bpb}"></label><label>Notes/beat<select id="f-spb">${[1,2,3,4].map(n=>`<option${n===s.spb?' selected':''}>${n}</option>`).join('')}</select></label></div>
+   <label>Timing for tab<select id="f-mode"><option value="even"${s.mode==='even'?' selected':''}>Even: every note gets one slot</option><option value="dash"${s.mode==='dash'?' selected':''}>Follow dashes: each column is one slot</option></select></label>
+   <label>Tab or chords<textarea id="f-text" spellcheck="false" placeholder="e|-0-2-3-|&#10;B|-------|&#10;G|-------|&#10;D|-------|&#10;A|-------|&#10;E|-------|">${esc(s.text)}</textarea></label>
+   <p class="hint">Paste guitar tab (six lines starting e| B| G| D| A| E|) from any tab site, or just chord names like <code>G C D:2 Em:2</code> (name:beats, default one bar each).</p>
+   <p class="err" id="f-err"></p>
+   <div class="row"><button type="submit" class="play" style="min-height:44px">Save and practise</button><button type="button" id="f-cancel">Cancel</button></div></form>`;
+  }else{
+   const L=sq?`<p class="links">Also search on <a href="${ugUrl(sq)}" target="_blank" rel="noopener">Ultimate Guitar</a> or <a href="${ssUrl(sq)}" target="_blank" rel="noopener">Songsterr</a></p>`:'';
+   h=`<h3 style="margin-top:0">Find tabs</h3><form id="sform" class="srch"><input type="text" id="sq" placeholder="Song or artist" value="${esc(sq)}" aria-label="Song or artist"><button type="submit">Search</button></form>
+   ${sbusy?'<p class="hint" style="margin-top:8px">Searching…</p>':''}
+   ${serr==='desktop'?'<p class="hint" style="margin-top:8px">Built-in search works in the Fretwork Windows app. For now, use the links below.</p>':serr?`<p class="err" style="margin-top:8px">${esc(serr)}</p>`:''}
+   ${sres&&sres.length?`<ul class="sres">${sres.map((r,i)=>`<li><b>${esc(r.title)}</b> <small>${esc(r.artist)}</small><div class="acts"><a href="${esc(r.url)}" target="_blank" rel="noopener">Open tab</a><button data-add="${i}">Add to my songs</button></div></li>`).join('')}</ul><p class="hint" style="margin-top:8px">Open the tab, copy it, then press “Add to my songs” and paste it in.</p>`:''}
+   ${L}
+   <h3>My songs</h3><button id="add" style="width:100%">Add a song</button>${undo?`<p class="hint" style="margin-top:8px">Deleted ${esc(undo.s.name)}. <button id="undo" style="min-height:36px">Undo</button></p>`:''}
+   <ul class="list" style="margin-top:12px">${songs.map(s=>itemRow(s,`${s.bpm} bpm · ${/\|.*-/.test(s.text)?'tab':'chords'}`,`<div class="acts"><button data-ed="${s.id}">Edit</button><button data-del="${s.id}">Delete</button></div>`)).join('')}</ul>
+   ${songs.length?'':'<p class="hint">No songs yet. Add one and paste its tab or chords.</p>'}
+   ${songs.some(s=>s.sample)?'<p class="note" style="margin-top:10px">The two starter songs are public-domain samples; delete them any time.</p>':''}`;
+  }
+ }else{
+  const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');return {l:d.toLocaleDateString(undefined,{weekday:'short'}),m:(mins[k]||0)/60}});
+  const mx=Math.max(10,...days.map(d=>d.m));
+  const all=[...DRILLS,...songs.map(s=>({id:s.id,name:s.name,target:s.bpm}))];
+  h=`<div class="card"><div class="big">${Math.round(days[6].m)} min</div><p class="hint">played today</p><div class="bars" style="margin-top:12px">${days.map(d=>`<div class="bar"><span>${d.l}</span><span class="tr"><i style="width:${d.m/mx*100}%"></i></span><span>${Math.round(d.m)} min</span></div>`).join('')}</div></div>
+  <h3>Best clean tempo vs goal</h3><div class="bars">${all.map(o=>`<div class="bar"><span title="${esc(o.name)}">${esc(o.name)}</span><span class="tr"><i style="width:${Math.min(100,best(o.id)/o.target*100)}%"></i></span><span>${best(o.id)||'–'}/${o.target}</span></div>`).join('')}</div>
+  <p class="hint" style="margin-top:12px">Tempos are logged when you press “Clean run”. Progress is kept in this browser only.</p>`;
+ }
+ P.innerHTML=h;
+ P.querySelectorAll('.item').forEach(el=>{const go=e=>{if(e.target.closest('button'))return;const id=el.dataset.id;const d=DRILLS.find(x=>x.id===id);if(d)select(drillItem(d));else{const s=songs.find(x=>x.id===id);if(s)select(songItem(s))}};el.onclick=go;el.onkeydown=e=>{if(e.key==='Enter')go(e)}});
+ P.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>{editing=b.dataset.ed;render()});
+ P.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const i=songs.findIndex(x=>x.id===b.dataset.del);undo={s:songs[i],i};songs.splice(i,1);save();render()});
+ const u=$('#undo');if(u)u.onclick=()=>{songs.splice(undo.i,0,undo.s);undo=null;save();render()};
+ const a=$('#add');if(a)a.onclick=()=>{editing='new';draftName='';undo=null;render();$('#f-name').focus()};
+ const sf=$('#sform');if(sf)sf.onsubmit=e=>{e.preventDefault();doSearch($('#sq').value)};
+ P.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{const r=sres[+b.dataset.add];editing='new';draftName=(r.artist?r.artist+' - ':'')+r.title;undo=null;render();$('#f-text').focus()});
+ const f=$('#sf');if(f){$('#f-cancel').onclick=()=>{editing=null;draftName='';render()};
+  f.onsubmit=e=>{e.preventDefault();const s={id:editing==='new'?'s-'+Date.now():editing,name:$('#f-name').value.trim()||'Untitled song',bpm:Math.max(30,Math.min(260,+$('#f-bpm').value||90)),bpb:Math.max(2,Math.min(12,+$('#f-bpb').value||4)),spb:+$('#f-spb').value,mode:$('#f-mode').value,text:$('#f-text').value};
+   const p=parseSong(s);if(!p.steps.length){$('#f-err').textContent='No notes found. Check that the tab has six lines starting with e| B| G| D| A| E|, or that chords are written like G C Am.';return}
+   const i=songs.findIndex(x=>x.id===s.id);if(i>=0)songs[i]=s;else songs.push(s);editing=null;save();select(songItem(s))}}
+}
+$('#t-drills').onclick=()=>{tab='drills';render()};$('#t-songs').onclick=()=>{tab='songs';render()};$('#t-prog').onclick=()=>{tab='prog';render()};
+
+/* ---------- boot ---------- */
+function boot(data){data=data||{};
+ songs=data.songs||LS.get('fw-songs',null)||SAMPLES.map(s=>({...s}));prog=data.prog||LS.get('fw-prog',{});mins=data.mins||LS.get('fw-mins',{});
+ select(drillItem(DRILLS[0]));drawFB()}
+window.claude?.hot?.snapshot?.(()=>({songs,prog,mins}));
+window.claude?.hot?.ready?window.claude.hot.ready(boot):boot(window.claude?.hot?.data??{});
+}
+</script>
+</body>
+</html>
