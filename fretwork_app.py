@@ -37,8 +37,91 @@ def _get_json(url):
         return json.loads(r.read().decode("utf-8"))
 
 
+def _clean_title(t):
+    t = re.sub(r"\s*@\s*Ultimate-Guitar\.com.*$", "", t or "", flags=re.I)
+    t = re.sub(r"\s*\((ver|version)\s*\d+\)", "", t, flags=re.I)
+    t = re.sub(r"\s+(official\s+)?(chords|tabs?|bass tabs?|ukulele chords|guitar pro|power tab)\b", "", t, flags=re.I)
+    m = re.match(r"\s*(.+?)\s+by\s+(.+?)\s*$", t)
+    return f"{m.group(2)} - {m.group(1)}" if m else t.strip()
+
+
+def _read_clipboard():
+    if sys.platform == "win32":
+        import ctypes
+        from ctypes import wintypes
+        u, k = ctypes.windll.user32, ctypes.windll.kernel32
+        u.GetClipboardData.restype = wintypes.HANDLE
+        k.GlobalLock.argtypes = [wintypes.HGLOBAL]
+        k.GlobalLock.restype = ctypes.c_void_p
+        k.GlobalUnlock.argtypes = [wintypes.HGLOBAL]
+        if not u.OpenClipboard(None):
+            return ""
+        try:
+            h = u.GetClipboardData(13)  # CF_UNICODETEXT
+            if not h:
+                return ""
+            ptr = k.GlobalLock(h)
+            try:
+                return ctypes.wstring_at(ptr) if ptr else ""
+            finally:
+                k.GlobalUnlock(h)
+        finally:
+            u.CloseClipboard()
+    try:
+        import tkinter
+        r = tkinter.Tk()
+        r.withdraw()
+        try:
+            return r.clipboard_get()
+        finally:
+            r.destroy()
+    except Exception:
+        return ""
+
+
 class Api:
-    """Functions the page can call as window.pywebview.api.<name>()."""
+    """Functions the page can call as window.pywebview.api.<name>().
+
+    Names starting with _ are kept private (not exposed to the page)."""
+
+    def __init__(self):
+        self._viewer = None
+
+    def _viewer_closed(self):
+        self._viewer = None
+
+    def open_page(self, url, title="Tab"):
+        """Open a tab or search page in Fretwork's own tab window."""
+        try:
+            if self._viewer is not None:
+                self._viewer.load_url(url)
+                self._viewer.set_title(f"Fretwork tab window - {title}")
+                self._viewer.show()
+                return {"ok": True}
+        except Exception:
+            self._viewer = None
+        self._viewer = webview.create_window(f"Fretwork tab window - {title}", url=url, width=1050, height=850)
+        self._viewer.events.closed += self._viewer_closed
+        return {"ok": True}
+
+    def import_page(self):
+        """Read the text of the page you have open in the tab window (only when you press Import)."""
+        if self._viewer is None:
+            return {"error": "No tab window is open. Search for a song and open a tab or chord page first."}
+        try:
+            text = self._viewer.evaluate_js("document.body ? document.body.innerText : ''") or ""
+            title = self._viewer.evaluate_js("document.title") or ""
+        except Exception as e:
+            return {"error": f"Could not read the tab window ({e})."}
+        if not text.strip():
+            return {"error": "The tab window is still loading or empty. Wait a moment and try again."}
+        return {"text": text, "title": _clean_title(title)}
+
+    def clipboard(self):
+        try:
+            return _read_clipboard()
+        except Exception:
+            return ""
 
     def search(self, query):
         q = urllib.parse.quote((query or "").strip())
