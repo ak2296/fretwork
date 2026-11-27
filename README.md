@@ -10,7 +10,7 @@ A guitar practice app for Windows.
 
 ## Download
 
-Get **Fretwork.exe** from the [latest release](../../releases/tag/latest) and double-click it. No install or Python needed.
+Get **FretworkSetup.exe** from the [latest release](../../releases/tag/latest) and run it. It installs Fretwork for your user (no admin rights needed), adds it to the Start menu, optionally to the desktop, and to Windows' list of installed apps for uninstalling. **Fretwork.exe** in the same release is the portable version that runs without installing.
 
 Windows may show a SmartScreen warning the first time because the app is not code-signed. Click **More info → Run anyway**.
 

@@ -170,7 +170,10 @@ def main():
         min_size=(420, 600),
     )
     # private_mode=False + storage_path keeps your songs and progress between runs
-    webview.start(private_mode=False, storage_path=data_dir())
+    try:
+        webview.start(private_mode=False, storage_path=data_dir(), icon=resource("fretwork.ico"))
+    except TypeError:  # older pywebview without the icon argument
+        webview.start(private_mode=False, storage_path=data_dir())
 
 
 if __name__ == "__main__":

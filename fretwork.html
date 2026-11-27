@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fretwork Guitar Practice</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 22c-1.3 0-8.7-8.3-9.4-12.7C2 5 6.6 2.4 12 2.4S22 5 21.4 9.3C20.7 13.7 13.3 22 12 22z' fill='%23ff4b2b'/><path d='M8.5 6v8M10.8 6v10M13.2 6v10M15.5 6v8' stroke='%231a0702' stroke-width='1.1'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -39,6 +40,7 @@ h1,h2,h3{font-family:"Bebas Neue","Source Sans 3",sans-serif;font-weight:400;let
 .nav button{background:none;border:0;border-radius:8px;min-height:44px;padding:0 14px;font:600 16px "Source Sans 3",sans-serif;color:var(--mut);white-space:nowrap}
 .nav button:hover{color:var(--ink);background:var(--raised)}
 .nav button[aria-selected=true]{color:var(--ink);background:var(--raised);box-shadow:inset 0 -2px 0 var(--acc)}
+.themebtn{background:none;border:1px solid var(--line);min-height:40px;padding:0 12px;font-size:15px;color:var(--mut)}.themebtn:hover{color:var(--ink)}
 .today{color:var(--mut);font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}.today b{color:var(--ink);font-weight:600}
 /* shell */
 .shell{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:0;min-height:calc(100dvh - 65px)}
@@ -144,7 +146,7 @@ textarea{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:1
 .steps{padding-left:20px;margin:0;color:var(--mut);font-size:15px}.steps li{margin:4px 0}
 .loading::after{content:"";display:inline-block;width:12px;height:12px;margin-left:8px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-1px}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:600px){.run{height:230px}.fb{height:120px}.readout output{font-size:54px}.play{flex:1}.form .two{grid-template-columns:repeat(2,minmax(0,1fr))}.brand span{display:none}.bar-top{gap:8px}}
+@media(max-width:600px){.themebtn span{display:none}.themebtn{padding:0 10px}.run{height:230px}.fb{height:120px}.readout output{font-size:54px}.play{flex:1}.form .two{grid-template-columns:repeat(2,minmax(0,1fr))}.brand span{display:none}.bar-top{gap:8px}}
 @media(prefers-reduced-motion:reduce){*,*::before{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -165,7 +167,10 @@ textarea{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:1
  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></symbol>
  <symbol id="i-open" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></symbol>
  <symbol id="i-add" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
- <symbol id="i-logo" viewBox="0 0 24 24"><path d="M12 2.5 20 8v8l-8 5.5L4 16V8z" fill="currentColor" stroke="none"/><path d="M8 9.5h8M8 12h8M8 14.5h8" stroke="#14110f" stroke-width="1.4"/></symbol>
+ <symbol id="i-logo" viewBox="0 0 24 24"><path d="M12 22c-1.3 0-8.7-8.3-9.4-12.7C2 5 6.6 2.4 12 2.4S22 5 21.4 9.3C20.7 13.7 13.3 22 12 22z" fill="currentColor"/><path d="M8.5 6v8M10.8 6v10M13.2 6v10M15.5 6v8" stroke="#1a0702" stroke-width="1.1" stroke-linecap="round" opacity=".85"/></symbol>
+ <symbol id="i-sys" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+ <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+ <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
 </svg>
 <a class="skip" href="#main">Skip to the player</a>
 <header class="bar-top">
@@ -176,6 +181,7 @@ textarea{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:1
     <button role="tab" id="t-songs" aria-selected="false">My songs</button>
     <button role="tab" id="t-prog" aria-selected="false">Progress</button>
   </nav>
+  <button id="theme" class="themebtn" aria-label="Colour theme: follows Windows"><svg aria-hidden="true" class="ic"><use href="#i-sys"/></svg><span>System</span></button>
   <div class="today" id="today"></div>
 </header>
 
@@ -610,6 +616,9 @@ function ladder(){if(!item)return;const st=Math.min(item.start,bpm),tg=Math.max(
  const pct=v=>Math.max(0,Math.min(100,(v-st)/(tg-st)*100));$('#lfill').style.width=pct(bpm)+'%';$('#lticks').style.backgroundSize=`${100/Math.max(1,Math.ceil((tg-st)/inc))}% 100%`;
  const lb=$('#lbest');if(b){lb.style.display='block';lb.style.left=pct(b)+'%'}else lb.style.display='none';
  $('#lstart').textContent='Start '+st;$('#lgoal').textContent='Goal '+tg;$('#lbestlab').innerHTML=b?`Best clean <b>${b}</b>`:''}
+const THEMES=[['system','System','i-sys','follows Windows'],['dark','Dark','i-moon','dark'],['light','Light','i-sun','light']];
+function applyTheme(t){const r=document.documentElement;if(t==='system')r.removeAttribute('data-theme');else r.setAttribute('data-theme',t);const m=THEMES.find(x=>x[0]===t)||THEMES[0];const b=$('#theme');b.innerHTML=`<svg aria-hidden="true" class="ic"><use href="#${m[2]}"/></svg><span>${m[1]}</span>`;b.setAttribute('aria-label','Colour theme: '+m[3]+'. Click to change.');LS.set('fw-theme',t);requestAnimationFrame(()=>{drawRun();drawFB()})}
+$('#theme').onclick=()=>{const cur=LS.get('fw-theme','system');const i=THEMES.findIndex(x=>x[0]===cur);applyTheme(THEMES[(i+1)%3][0])};
 function showToday(){const m=Math.round((mins[today()]||0)/60);$('#today').innerHTML=`Today <b>${m} min</b>`}
 function setBpm(v){bpm=Math.max(30,Math.min(260,Math.round(v)));$('#bpmv').value=bpm;$('#bpmv').textContent=bpm;$('#bpm').value=bpm;if(item){(prog[item.id]=prog[item.id]||{best:0,log:[]}).bpm=bpm;save();ladder()}}
 function sched(i,t){const st=item.steps[i],d=60/bpm/item.spb,beat=i%item.spb===0;
@@ -752,7 +761,7 @@ window.addEventListener('pywebviewready',()=>render());
 /* ---------- boot ---------- */
 function boot(data){data=data||{};
  songs=data.songs||LS.get('fw-songs',null)||SAMPLES.map(s=>({...s}));scfg=LS.get('fw-scfg',null)||{key:9,sc:'minpent',pat:'nps',pos:0,str:2,seq:'updown',spb:4,legato:false};prog=data.prog||LS.get('fw-prog',{});mins=data.mins||LS.get('fw-mins',{});
- select(drillItem(DRILLS[0]));drawFB();showToday();const t0=TABS.find(t=>'#'+t[1]===location.hash);if(t0&&t0[0]!=='drills')goTab(t0[0])}
+ applyTheme(LS.get('fw-theme','system'));select(drillItem(DRILLS[0]));drawFB();showToday();const t0=TABS.find(t=>'#'+t[1]===location.hash);if(t0&&t0[0]!=='drills')goTab(t0[0])}
 window.claude?.hot?.snapshot?.(()=>({songs,prog,mins}));
 window.claude?.hot?.ready?window.claude.hot.ready(boot):boot(window.claude?.hot?.data??{});
 }

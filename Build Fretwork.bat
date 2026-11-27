@@ -16,7 +16,7 @@ echo Installing the parts Fretwork needs...
 %PY% -m pip install --upgrade pywebview pyinstaller || goto fail
 
 echo Building Fretwork.exe...
-%PY% -m PyInstaller --noconfirm --onefile --windowed --name Fretwork --add-data "fretwork.html;." fretwork_app.py || goto fail
+%PY% -m PyInstaller --noconfirm --onefile --windowed --name Fretwork --icon fretwork.ico --add-data "fretwork.html;." --add-data "fretwork.ico;." fretwork_app.py || goto fail
 
 copy /y "dist\Fretwork.exe" "Fretwork.exe" >nul
 rmdir /s /q build >nul 2>nul
