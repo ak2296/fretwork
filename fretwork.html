@@ -32,7 +32,8 @@ h1,h2,h3{font-family:"Bebas Neue","Source Sans 3",sans-serif;font-weight:400;let
 .ic.fill{fill:currentColor;stroke:none}
 /* app bar */
 .bar-top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:20px;padding:10px max(16px,2.5vw);background:color-mix(in oklab,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:10px;font:400 30px/1 "Bebas Neue",sans-serif;letter-spacing:.04em;white-space:nowrap}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;background:var(--acc);color:var(--on-acc);padding:12px 16px;border-radius:10px;font-weight:600;text-decoration:none}.skip:focus{top:10px}
+.brand{margin:0;display:flex;align-items:center;gap:10px;font:400 30px/1 "Bebas Neue",sans-serif;letter-spacing:.04em;white-space:nowrap}
 .brand svg{width:28px;height:28px;color:var(--acc)}
 .nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1}
 .nav button{background:none;border:0;border-radius:8px;min-height:44px;padding:0 14px;font:600 16px "Source Sans 3",sans-serif;color:var(--mut);white-space:nowrap}
@@ -40,8 +41,8 @@ h1,h2,h3{font-family:"Bebas Neue","Source Sans 3",sans-serif;font-weight:400;let
 .nav button[aria-selected=true]{color:var(--ink);background:var(--raised);box-shadow:inset 0 -2px 0 var(--acc)}
 .today{color:var(--mut);font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}.today b{color:var(--ink);font-weight:600}
 /* shell */
-.shell{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:0;min-height:calc(100% - 65px)}
-.library{border-right:1px solid var(--line);background:var(--surface);padding:18px max(16px,1.5vw) 40px;overflow:auto;max-height:calc(100vh - 65px);position:sticky;top:65px}
+.shell{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:0;min-height:calc(100dvh - 65px)}
+.library{border-right:1px solid var(--line);background:var(--surface);padding:18px max(16px,1.5vw) 40px;overflow:auto;max-height:calc(100dvh - 65px);position:sticky;top:65px}
 .player{padding:18px max(16px,2.5vw) 48px;display:grid;gap:14px;align-content:start}
 @media(min-width:1000px){.library{grid-column:1;grid-row:1}.player{grid-column:2;grid-row:1}}
 @media(max-width:999px){.shell{grid-template-columns:minmax(0,1fr)}.library{order:2;position:static;max-height:none;border-right:0;border-top:1px solid var(--line)}.today{display:none}}
@@ -61,6 +62,7 @@ h1,h2,h3{font-family:"Bebas Neue","Source Sans 3",sans-serif;font-weight:400;let
 /* transport */
 .transport{display:grid;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
 .row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+button,a,summary,[role=button],input,select{touch-action:manipulation}
 button{font:600 16px/1 "Source Sans 3",sans-serif;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,border-color .15s,color .15s}
 button:hover{border-color:var(--mut)}
 button:active{transform:translateY(1px)}
@@ -91,6 +93,7 @@ input[type=range]{width:100%;accent-color:var(--acc);height:28px;margin:0}
 input[type=number],input[type=text],select,textarea{font:16px "Source Sans 3",sans-serif;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:44px}
 input[type=number]{width:4.8em;font-variant-numeric:tabular-nums}
 select{padding-right:28px}
+.warn{color:var(--acc);border-color:var(--acc)}
 .ok-btn{color:var(--ok);border-color:color-mix(in oklab,var(--ok) 50%,var(--line));background:var(--ok-soft)}
 #status{color:var(--mut);font-size:15px;flex-basis:100%}
 .divider{height:1px;background:var(--line);margin:2px 0}
@@ -105,7 +108,7 @@ select{padding-right:28px}
 .item .best{grid-row:1/3;grid-column:2;font:400 26px/1 "Bebas Neue",sans-serif;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .item .best i{display:block;font:500 13px "Source Sans 3",sans-serif;color:var(--mut);font-style:normal}
 .item .best.done{color:var(--ok)}
-.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;grid-column:1/-1}.acts button,.acts a{min-height:36px;padding:0 10px;font-size:14px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;grid-column:1/-1}.acts button,.acts a{min-height:44px;padding:0 12px;font-size:15px}
 .acts a{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:10px;color:var(--ink);text-decoration:none;font-weight:600}
 .lvl{border-bottom:1px solid var(--line);padding:4px 0}
 .lvl summary{list-style:none;display:grid;grid-template-columns:2.2em minmax(0,1fr) auto;gap:4px 12px;align-items:center;min-height:56px;cursor:pointer;padding:6px 4px;border-radius:8px}
@@ -132,6 +135,7 @@ textarea{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:1
 .bar span:last-child{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .bar span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .note{font-size:14px;color:var(--mut)}
+.flabel{display:block;font-weight:600;font-size:15px;margin:0 0 6px}
 .srch{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
 .srch input{width:100%}
 .sres{display:grid;gap:6px;margin:12px 0 0;padding:0;list-style:none}
@@ -163,8 +167,9 @@ textarea{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:1
  <symbol id="i-add" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
  <symbol id="i-logo" viewBox="0 0 24 24"><path d="M12 2.5 20 8v8l-8 5.5L4 16V8z" fill="currentColor" stroke="none"/><path d="M8 9.5h8M8 12h8M8 14.5h8" stroke="#14110f" stroke-width="1.4"/></symbol>
 </svg>
+<a class="skip" href="#main">Skip to the player</a>
 <header class="bar-top">
-  <div class="brand"><svg aria-hidden="true"><use href="#i-logo"/></svg><span>Fretwork</span></div>
+  <h1 class="brand"><svg aria-hidden="true"><use href="#i-logo"/></svg><span>Fretwork</span></h1>
   <nav class="nav" role="tablist" aria-label="Library">
     <button role="tab" id="t-drills" aria-selected="true">Lessons</button>
     <button role="tab" id="t-scales" aria-selected="false">Scales</button>
@@ -175,7 +180,7 @@ textarea{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:1
 </header>
 
 <div class="shell">
-<main class="player" id="main">
+<main class="player" id="main" tabindex="-1">
   <div class="head">
     <h2 id="iname">Chromatic 1-2-3-4</h2>
     <div class="meta" id="imeta"></div>
@@ -188,11 +193,11 @@ textarea{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:1
   </div>
   <section class="transport" aria-label="Practice controls">
     <div class="row">
-      <button id="play" class="primary play"><svg class="ic fill"><use href="#i-play"/></svg><span>Play</span></button>
+      <button id="play" class="primary play"><svg aria-hidden="true" class="ic fill"><use href="#i-play"/></svg><span>Play</span></button>
       <div class="tempo">
-        <button id="minus" aria-label="2 bpm slower"><svg class="ic"><use href="#i-minus"/></svg></button>
+        <button id="minus" aria-label="2 bpm slower"><svg aria-hidden="true" class="ic"><use href="#i-minus"/></svg></button>
         <div class="readout"><output id="bpmv" aria-live="polite">60</output><span>bpm</span></div>
-        <button id="plus" aria-label="2 bpm faster"><svg class="ic"><use href="#i-plus"/></svg></button>
+        <button id="plus" aria-label="2 bpm faster"><svg aria-hidden="true" class="ic"><use href="#i-plus"/></svg></button>
       </div>
       <div class="tempo-wide">
         <input type="range" id="bpm" min="30" max="260" value="60" aria-label="Tempo">
@@ -213,15 +218,15 @@ textarea{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:1
       <label>every <input type="number" inputmode="numeric" id="every" min="1" max="20" value="2"> loops</label>
     </div>
     <div class="row judge">
-      <button id="clean" class="ok-btn"><svg class="ic"><use href="#i-check"/></svg>Clean run, log it</button>
-      <button id="messy"><svg class="ic"><use href="#i-slower"/></svg>Too messy, slow down</button>
-      <button id="next"><svg class="ic"><use href="#i-next"/></svg>Next exercise</button>
+      <button id="clean" class="ok-btn"><svg aria-hidden="true" class="ic"><use href="#i-check"/></svg>Clean run, log it</button>
+      <button id="messy"><svg aria-hidden="true" class="ic"><use href="#i-slower"/></svg>Too messy, slow down</button>
+      <button id="next"><svg aria-hidden="true" class="ic"><use href="#i-next"/></svg>Next exercise</button>
       <span id="status" role="status" aria-live="polite">Space bar starts and stops.</span>
     </div>
   </section>
 </main>
 <aside class="library" aria-label="Library">
-  <div id="pane"></div>
+  <div id="pane" role="tabpanel" tabindex="0"></div>
 </aside>
 </div>
 
@@ -525,7 +530,7 @@ let songs,prog,mins,item,bpm=60,tab='drills',editing=null,undo=null,passes=0;
 let sq='',sres=null,sbusy=false,serr='',draftName='',draftText='';
 const ugUrl=q=>'https://www.ultimate-guitar.com/search.php?search_type=title&value='+encodeURIComponent(q);
 const ssUrl=q=>'https://www.songsterr.com/?pattern='+encodeURIComponent(q);
-async function doSearch(q){sq=q.trim();if(!sq)return;sbusy=true;serr='';sres=null;render();
+async function doSearch(q){sq=q.trim();if(!sq){serr='Type a song or artist first.';render();$('#sq').focus();return}if(sbusy)return;sbusy=true;serr='';sres=null;render();
  const api=window.pywebview&&window.pywebview.api;
  if(!api||!api.search){serr='desktop'}else{try{const j=await api.search(sq);sres=j.results||[];serr=j.error||''}catch(e){serr='Search failed. Check your internet connection.'}}
  sbusy=false;render()}
@@ -622,8 +627,8 @@ function tick(){while(nextT<ac.currentTime+.12){sched(idx,nextT);nextT+=60/bpm/i
 function start(){if(!item||!item.steps.length)return;try{ensureAC()}catch(e){status('Audio is not available in this browser.');return}
  playing=true;passes=0;vq=[];cur=null;idx=0;const t0=ac.currentTime+.15,bd=60/bpm;let t=t0;
  if($('#cin').checked){for(let b=0;b<item.bpb;b++){click(t0+b*bd,b===0);vq.push({i:-1,t:t0+b*bd,beat:true})}t=t0+item.bpb*bd}
- nextT=t;timer=setInterval(tick,25);tick();$('#play').innerHTML='<svg class="ic fill"><use href="#i-stop"/></svg><span>Stop</span>';$('#play').classList.add('on');status($('#cin').checked?'Count-in…':'Go');lastFrame=performance.now();requestAnimationFrame(frame)}
-function stop(){playing=false;clearInterval(timer);vq=[];$('#play').innerHTML='<svg class="ic fill"><use href="#i-play"/></svg><span>Play</span>';$('#play').classList.remove('on');light.style.opacity=.15;save()}
+ nextT=t;timer=setInterval(tick,25);tick();$('#play').innerHTML='<svg aria-hidden="true" class="ic fill"><use href="#i-stop"/></svg><span>Stop</span>';$('#play').classList.add('on');status($('#cin').checked?'Count-in…':'Go');lastFrame=performance.now();requestAnimationFrame(frame)}
+function stop(){playing=false;clearInterval(timer);vq=[];$('#play').innerHTML='<svg aria-hidden="true" class="ic fill"><use href="#i-play"/></svg><span>Play</span>';$('#play').classList.remove('on');light.style.opacity=.15;save()}
 function frame(now){if(!playing)return;const at=ac.currentTime;
  while(vq.length&&vq[0].t<=at){const e=vq.shift();if(e.beat)lastBeat=e.t;if(e.i>=0){cur=e;mark(e.i);if(e.i===0&&passes===0)status()}}
  pos=cur?cur.i+Math.min(1,(at-cur.t)/cur.d):0;place(pos);
@@ -668,7 +673,7 @@ function chordSummary(p,bpb){if(!p.steps.length)return 'Nothing recognised yet. 
  if(p.chord){const u=[...new Set(p.steps.map(s=>s.c))],miss=u.filter(c=>!shape(c));return `Found chords: ${u.slice(0,14).join(' ')}${u.length>14?' …':''} (${Math.ceil(p.steps.length/bpb)} bars).${miss.length?' No shape yet for '+miss.join(', ')+'; those get a click only.':''}`}
  return `Found tab: ${p.steps.filter(s=>s.n.length).length} notes.`}
 function render(){
- for(const[k,b]of[['drills','#t-drills'],['scales','#t-scales'],['songs','#t-songs'],['prog','#t-prog']])$(b).setAttribute('aria-selected',tab===k);
+ for(const[k,b]of[['drills','#t-drills'],['scales','#t-scales'],['songs','#t-songs'],['prog','#t-prog']]){const el=$(b);el.setAttribute('aria-selected',tab===k);el.tabIndex=tab===k?0:-1;el.setAttribute('aria-controls','pane');if(tab===k)$('#pane').setAttribute('aria-labelledby',el.id)}
  const P=$('#pane');let h='';const api=API(),desk=!!(api&&api.open_page);
  if(tab==='drills'){
   const curL=item&&item.level!=null?item.level:0;
@@ -677,25 +682,25 @@ function render(){
  else if(tab==='songs'){
   if(editing){const s=editing==='new'?{name:draftName,bpm:90,bpb:4,spb:2,mode:'even',text:draftText||''}:songs.find(x=>x.id===editing);
    h=`<form class="form" id="sf"><h3 style="margin-top:0">${editing==='new'?'Add a song':'Edit song'}</h3>
-   <div class="row">${desk?'<button type="button" id="f-imp" class="primary"><svg class="ic"><use href="#i-import"/></svg>Import from tab window</button>':''}<button type="button" id="f-paste"><svg class="ic"><use href="#i-paste"/></svg>Paste from clipboard</button></div>
-   <label>Name<input type="text" id="f-name" value="${esc(s.name)}" required></label>
+   <div class="row">${desk?'<button type="button" id="f-imp" class="primary"><svg aria-hidden="true" class="ic"><use href="#i-import"/></svg>Import from tab window</button>':''}<button type="button" id="f-paste"><svg aria-hidden="true" class="ic"><use href="#i-paste"/></svg>Paste from clipboard</button></div>
+   <label><span>Name <span aria-hidden="true" style="color:var(--acc)">*</span></span><input type="text" id="f-name" autocomplete="off" value="${esc(s.name)}" required></label>
    <div class="two"><label>Full tempo<input type="number" id="f-bpm" min="30" max="260" value="${s.bpm}"></label><label>Beats/bar<input type="number" id="f-bpb" min="2" max="12" value="${s.bpb}"></label><label>Notes/beat<select id="f-spb">${[1,2,3,4].map(n=>`<option${n===s.spb?' selected':''}>${n}</option>`).join('')}</select></label></div>
    <label>Timing for tab<select id="f-mode"><option value="even"${s.mode==='even'?' selected':''}>Even: every note gets one slot</option><option value="dash"${s.mode==='dash'?' selected':''}>Follow dashes: each column is one slot</option></select></label>
-   <label>Tab or chords<textarea id="f-text" spellcheck="false" placeholder="Paste a tab or chord sheet here. Lyrics, headings and other text on the page are ignored.">${esc(s.text)}</textarea></label>
+   <label>Tab or chords<textarea id="f-text" aria-describedby="f-prev f-err" spellcheck="false" placeholder="Paste a tab or chord sheet here. Lyrics, headings and other text on the page are ignored.">${esc(s.text)}</textarea></label>
    <p class="hint" id="f-prev"></p>
-   <p class="err" id="f-err"></p>
+   <p class="err" id="f-err" role="alert"></p>
    <div class="row"><button type="submit" class="primary">Save and practise</button><button type="button" id="f-cancel">Cancel</button></div></form>`;
   }else{
-   const openBtn=(url,label,title)=>desk?`<button data-open="${esc(url)}" data-title="${esc(title||label)}"><svg class="ic"><use href="#i-open"/></svg>${esc(label)}</button>`:`<a href="${esc(url)}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-open"/></svg>${esc(label)}</a>`;
-   h=`<h3 style="margin-top:0">Find a song</h3><form id="sform" class="srch"><input type="text" id="sq" placeholder="Song or artist" value="${esc(sq)}" aria-label="Song or artist"><button type="submit"><svg class="ic"><use href="#i-search"/></svg>Search</button></form>
+   const openBtn=(url,label,title)=>desk?`<button data-open="${esc(url)}" data-title="${esc(title||label)}"><svg aria-hidden="true" class="ic"><use href="#i-open"/></svg>${esc(label)}</button>`:`<a href="${esc(url)}" target="_blank" rel="noopener"><svg aria-hidden="true" class="ic"><use href="#i-open"/></svg>${esc(label)}</a>`;
+   h=`<h3 style="margin-top:0">Find a song</h3><label for="sq" class="flabel">Song or artist</label><form id="sform" class="srch" role="search"><input type="search" id="sq" placeholder="e.g. a song title" value="${esc(sq)}" autocomplete="off"><button type="submit"${sbusy?' disabled aria-busy="true"':''}><svg aria-hidden="true" class="ic"><use href="#i-search"/></svg>${sbusy?'Searching':'Search'}</button></form>
    <p class="hint" style="margin-top:8px">${desk?'Search, open a tab or chord page in the tab window, then press “Import from tab window”. Ultimate Guitar pages import best: their tabs and chord sheets are plain text.':'Search, open a tab page, copy it (Ctrl+A, Ctrl+C), then press “Add a song” and paste. Lyrics and other page text are ignored.'}</p>
    ${sbusy?'<p class="hint loading">Searching</p>':''}
    ${serr==='desktop'?'<p class="hint">Built-in search works in the Fretwork Windows app. Use the links below here.</p>':serr?`<p class="err">${esc(serr)}</p>`:''}
    ${sq?`<div class="acts" style="margin-top:10px">${openBtn(ugUrl(sq),'Search Ultimate Guitar','Ultimate Guitar: '+sq)}${desk?'':openBtn(ssUrl(sq),'Search Songsterr')}</div>`:''}
    ${sres&&sres.length?`<ul class="sres">${sres.map((r,i)=>`<li><b>${esc(r.title)}</b> <small>${esc(r.artist)}</small><div class="acts">${openBtn(r.url,'Open',r.artist+' - '+r.title)}${openBtn(ugUrl(r.artist+' '+r.title),'On Ultimate Guitar',r.title)}</div></li>`).join('')}</ul>`:''}
-   ${desk?'<button id="imp" class="primary" style="width:100%;margin-top:12px"><svg class="ic"><use href="#i-import"/></svg>Import from tab window</button>':''}
-   <h3>My songs</h3><button id="add" style="width:100%"><svg class="ic"><use href="#i-add"/></svg>Add a song</button>${undo?`<p class="hint" style="margin-top:8px">Deleted ${esc(undo.s.name)}. <button id="undo" style="min-height:36px"><svg class="ic"><use href="#i-undo"/></svg>Undo</button></p>`:''}
-   <ul class="list" style="margin-top:12px">${songs.map(s=>itemRow(s,`${s.bpm} bpm · ${parseSong(s).chord?'chords':'tab'}`,`<div class="acts"><button data-ed="${s.id}"><svg class="ic"><use href="#i-edit"/></svg>Edit</button><button data-del="${s.id}"><svg class="ic"><use href="#i-trash"/></svg>Delete</button></div>`)).join('')}</ul>
+   ${desk?'<button id="imp" class="primary" style="width:100%;margin-top:12px"><svg aria-hidden="true" class="ic"><use href="#i-import"/></svg>Import from tab window</button>':''}
+   <h3>My songs</h3><button id="add" style="width:100%"><svg aria-hidden="true" class="ic"><use href="#i-add"/></svg>Add a song</button>${undo?`<p class="hint" style="margin-top:8px">Deleted ${esc(undo.s.name)}. <button id="undo"><svg aria-hidden="true" class="ic"><use href="#i-undo"/></svg>Undo</button></p>`:''}
+   <ul class="list" style="margin-top:12px">${songs.map(s=>itemRow(s,`${s.bpm} bpm · ${parseSong(s).chord?'chords':'tab'}`,`<div class="acts"><button data-ed="${s.id}"><svg aria-hidden="true" class="ic"><use href="#i-edit"/></svg>Edit</button><button data-del="${s.id}"><svg aria-hidden="true" class="ic"><use href="#i-trash"/></svg>Delete</button></div>`)).join('')}</ul>
    ${songs.length?'':'<p class="hint">No songs yet.</p>'}
    ${songs.some(s=>s.sample)?'<p class="note" style="margin-top:10px">The two starter songs are public-domain samples; delete them any time.</p>':''}`;
   }
@@ -724,7 +729,7 @@ function render(){
  const f=$('#sf');if(f){
   const prev=()=>{const s={text:$('#f-text').value,bpb:+$('#f-bpb').value||4,spb:+$('#f-spb').value,mode:$('#f-mode').value};$('#f-prev').textContent=chordSummary(parseSong(s),s.bpb)};
   $('#f-text').oninput=prev;$('#f-bpb').oninput=prev;$('#f-mode').onchange=prev;prev();
-  $('#f-cancel').onclick=()=>{editing=null;draftName='';draftText='';render()};
+  const orig=$('#f-text').value+'|'+$('#f-name').value;const cb=$('#f-cancel');cb.onclick=()=>{const dirty=($('#f-text').value+'|'+$('#f-name').value)!==orig;if(dirty&&!cb.dataset.arm){cb.dataset.arm=1;cb.textContent='Discard changes?';cb.classList.add('warn');return}editing=null;draftName='';draftText='';render()};
   $('#f-paste').onclick=async()=>{let t='';const api=API();try{t=api&&api.clipboard?await api.clipboard():await navigator.clipboard.readText()}catch(e){}
    if(!t){$('#f-err').textContent='Could not read the clipboard here. Click in the box and press Ctrl+V instead.';return}$('#f-err').textContent='';$('#f-text').value=t;prev()};
   const fi=$('#f-imp');if(fi)fi.onclick=importPage;
@@ -732,19 +737,22 @@ function render(){
    const p=parseSong(s);if(!p.steps.length){$('#f-err').textContent='No tab or chords found. Check that the tab has six lines starting with e| B| G| D| A| E|, or that chords are written like G C Am.';return}
    const i=songs.findIndex(x=>x.id===s.id);if(i>=0)songs[i]=s;else songs.push(s);editing=null;draftText='';save();select(songItem(s))}}
 }
-async function importPage(){const api=API();if(!api||!api.import_page)return;const e=$('#f-err'),pv=$('#f-prev');if(pv)pv.textContent='Reading the tab window…';
+async function importPage(){const api=API();if(!api||!api.import_page)return;const e=$('#f-err'),pv=$('#f-prev'),bt=$('#f-imp');if(bt){if(bt.disabled)return;bt.disabled=true;bt.setAttribute('aria-busy','true')}const done=()=>{if(bt){bt.disabled=false;bt.removeAttribute('aria-busy')}};if(pv)pv.textContent='Reading the tab window…';
  let r;try{r=await api.import_page()}catch(x){r={error:'Could not read the tab window.'}}
- if(r.error){if(e)e.textContent=r.error;if(pv)pv.textContent='';return}
+ done();if(r.error){if(e)e.textContent=r.error;if(pv)pv.textContent='';return}
  const s={text:r.text,bpb:4,spb:2,mode:'even'},p=parseSong(s);
  if(!p.steps.length){if(e)e.textContent='No tab or chords found on that page. Songsterr shows tabs as pictures, so open the song on Ultimate Guitar instead.';if(pv)pv.textContent='';return}
  if(e)e.textContent='';$('#f-text').value=r.text;if(!$('#f-name').value.trim()&&r.title)$('#f-name').value=r.title;$('#f-text').dispatchEvent(new Event('input'))}
-$('#t-drills').onclick=()=>{tab='drills';render()};$('#t-scales').onclick=()=>{tab='scales';render();if(!(item&&item.cfg))select(scaleItem(scfg))};$('#t-songs').onclick=()=>{tab='songs';render()};$('#t-prog').onclick=()=>{tab='prog';render()};
+const TABS=[['drills','lessons'],['scales','scales'],['songs','songs'],['prog','progress']];
+function goTab(k,focus){tab=k;render();if(k==='scales'&&!(item&&item.cfg))select(scaleItem(scfg));try{const hs=TABS.find(t=>t[0]===k)[1];if(location.hash!=='#'+hs)history.replaceState(null,'','#'+hs)}catch(e){}if(focus)$('#t-'+k).focus()}
+for(const[k]of TABS){const el=$('#t-'+k);el.onclick=()=>goTab(k);el.onkeydown=e=>{const i=TABS.findIndex(t=>t[0]===k);let j=-1;if(e.key==='ArrowRight')j=(i+1)%4;if(e.key==='ArrowLeft')j=(i+3)%4;if(e.key==='Home')j=0;if(e.key==='End')j=3;if(j>=0){e.preventDefault();goTab(TABS[j][0],true)}}}
+window.addEventListener('hashchange',()=>{const t=TABS.find(t=>'#'+t[1]===location.hash);if(t&&t[0]!==tab)goTab(t[0])});
 window.addEventListener('pywebviewready',()=>render());
 
 /* ---------- boot ---------- */
 function boot(data){data=data||{};
  songs=data.songs||LS.get('fw-songs',null)||SAMPLES.map(s=>({...s}));scfg=LS.get('fw-scfg',null)||{key:9,sc:'minpent',pat:'nps',pos:0,str:2,seq:'updown',spb:4,legato:false};prog=data.prog||LS.get('fw-prog',{});mins=data.mins||LS.get('fw-mins',{});
- select(drillItem(DRILLS[0]));drawFB();showToday()}
+ select(drillItem(DRILLS[0]));drawFB();showToday();const t0=TABS.find(t=>'#'+t[1]===location.hash);if(t0&&t0[0]!=='drills')goTab(t0[0])}
 window.claude?.hot?.snapshot?.(()=>({songs,prog,mins}));
 window.claude?.hot?.ready?window.claude.hot.ready(boot):boot(window.claude?.hot?.data??{});
 }
